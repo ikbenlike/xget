@@ -8,11 +8,14 @@ class wClient
 	{
 		String[] arguments = Environment.GetCommandLineArgs();
 		WebClient webClient = new WebClient();
-		webClient.DownloadFile(arguments[1], arguments[2]);
-		Console.WriteLine ("File to download:");
-		Console.WriteLine(arguments[1]);
-		Console.WriteLine ("Destination for file:");
-		Console.WriteLine (arguments [2]);
-
+		try 
+		{
+			Console.WriteLine ("File to download:\n" + arguments [1] + "\nDestination:\n" + arguments [2]);
+			webClient.DownloadFile(arguments[1], arguments[2]);
+		}
+		catch (IndexOutOfRangeException) {
+			Console.WriteLine("please input a valid URL and destination");
+			throw;
+		}
 	}
 }
