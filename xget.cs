@@ -10,24 +10,42 @@ class wClient
 		String[] arguments = Environment.GetCommandLineArgs();
 		WebClient webClient = new WebClient();
 
-		try 
-		{
-			Console.WriteLine ("File to download:\n" + arguments [1] + "\nDestination:\n" + arguments [2]);
-			webClient.DownloadFile(arguments[1], arguments[2]);	
-		}
-
-		catch (IndexOutOfRangeException) {
+		if (arguments[1] == "-f") {
 			try
 			{
-				char[] splitChars = { '/' };
-				string linkToDownload = arguments[1];
-				string[] fileDest = linkToDownload.Split(splitChars);
-				Console.WriteLine("File to download:\n" + arguments[1] + "\nDestination:\n" + fileDest.Last());
-				webClient.DownloadFile(arguments[1], fileDest.Last());
+				string[] listLinksToDownload = System.IO.File.ReadAllLines(arguments[2]);
+				foreach (string linkToDownload in listLinksToDownload)
+				{
+					try {
+						char[] splitChars = { '/' };
+						string[] fileDest = linkToDownload.Split (splitChars);
+						Console.WriteLine ("File to download:\n" + linkToDownload + "\nDestination:\n" + fileDest.Last());
+						webClient.DownloadFile (linkToDownload, fileDest.Last());	
+					} catch (IndexOutOfRangeException) {
+						Console.WriteLine ("please input a valid link");
+					}
+				}
+
 			}
-			catch (IndexOutOfRangeException) {
-				Console.WriteLine ("please input a valid URL and destination");
-				throw;
+			catch (System.IO.FileNotFoundException){
+				Console.WriteLine ("please provide a valid path");
+			}
+		} else {
+
+			try {
+				Console.WriteLine ("File to download:\n" + arguments [1] + "\nDestination:\n" + arguments [2]);
+				webClient.DownloadFile (arguments [1], arguments [2]);	
+			} catch (IndexOutOfRangeException) {
+				try {
+					char[] splitChars = { '/' };
+					string linkToDownload = arguments [1];
+					string[] fileDest = linkToDownload.Split (splitChars);
+					Console.WriteLine ("File to download:\n" + arguments [1] + "\nDestination:\n" + fileDest.Last ());
+					webClient.DownloadFile (arguments [1], fileDest.Last ());
+				} catch (IndexOutOfRangeException) {
+					Console.WriteLine ("please input a valid URL and destination");
+					throw;
+				}
 			}
 		}
 	}
