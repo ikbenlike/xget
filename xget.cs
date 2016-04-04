@@ -47,14 +47,28 @@ class wClient
 							char[] splitChars = { '/' };
 							string linkToDownload = arguments [2];
 							string[] fileDest = linkToDownload.Split (splitChars);
-							Console.WriteLine ("File to download:\n" + arguments [2] + "\nDestination:\n" + fileDest.Last ());
+                        Console.WriteLine ("File to download:\n" + linkToDownload + "\nDestination:\n" + fileDest.Last ());
 							webClient.DownloadFile (arguments [2], fileDest.Last ());
 						} catch (IndexOutOfRangeException) {
 							Console.WriteLine ("please input a valid URL and/or destination");
 							throw;
 						}
 					}
-				} else if (arguments[1] == "-h") { 
+            } else if (arguments[1] == "-ml") {
+                try
+                {
+                    string[] downloadLinks = arguments[2].Split('#');
+                    foreach (string linkToDownload in downloadLinks)
+                    {
+                        string[] fileDest = linkToDownload.Split('/');
+                        Console.WriteLine ("File to download:\n" + linkToDownload + "\nDestination:\n" + fileDest.Last ());
+                        webClient.DownloadFile(linkToDownload, fileDest.Last());
+                    }
+                } catch (IndexOutOfRangeException) {
+                    Console.WriteLine("please input link(s)");
+                }
+
+            } else if (arguments[1] == "-h") { 
 					Console.WriteLine("xget is a simple file downloader");
 					Console.WriteLine("use `xget -f [filename]` (without the brackets) to get links from the specified file");
 					Console.WriteLine("use `xget -l [url] -o [destination]` to download a file from the specified url to the specified destination");
